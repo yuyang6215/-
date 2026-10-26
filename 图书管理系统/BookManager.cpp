@@ -270,7 +270,7 @@ void FindBooks()
 		std::getline(std::cin >> std::ws, name);
 		for (const Book& book : books)
 		{
-			if (name == book.GetName())
+			if (book.GetName().find(name) != std::string::npos)
 			{
 				book.Get_Book();
 				found = true;
