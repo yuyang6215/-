@@ -27,6 +27,8 @@ float InputFloat();
 
 bool IsBlank(const std::string& str);
 
+std::string Trim(const std::string& str);
+
 int ManagerTitle()
 {
 	std::cout << "\n";
@@ -89,6 +91,8 @@ int InputInt()
 	{
 		std::size_t pos = 0;
 		std::getline(std::cin, value);
+		value = Trim(value);
+
 		try
 		{
 			int result = std::stoi(value, &pos);
@@ -116,13 +120,13 @@ int InputInt()
 		std::cout << "Invalid input! Please enter an integer: ";
 	}
 }
-
 float InputFloat()
 {
 	std::string value;
 	while (true)
 	{
 		std::getline(std::cin, value);
+		value = Trim(value);
 		std::size_t pos = 0;
 		try
 		{
@@ -155,14 +159,43 @@ bool IsBlank(const std::string& str)
 		});
 }
 
+std::string Tolower(std::string str)
+{
+	for (std::string::size_type i = 0; i < str.size(); i++)
+	{
+		str[i] = static_cast<char>(std::tolower(static_cast<unsigned char>(str[i])));
+	}
+	return str;
+}
+
+std::string Trim(const std::string& str)
+{
+	std::size_t start = str.find_first_not_of(" ");
+
+	if (start == std::string::npos)
+	{
+		return "";
+	}
+
+	std::size_t end = str.find_last_not_of(" ");
+	return str.substr(start, end - start + 1);
+}
+
 void ShowBooks()
 {
 	std::cout << "--------------------------\n"
 		<< "      Show All Books\n"
 		<< "--------------------------\n";
-	for (const Book& value : books)
+	if (books.empty())
 	{
-		value.Get_Book();
+		std::cout << "No books available!\n";
+	}
+	else
+	{
+		for (const Book& value : books)
+		{
+			value.Get_Book();
+		}
 	}
 }
 
@@ -178,6 +211,7 @@ void AddBook()
 	{
 		std::cout << "Input book name: ";
 		std::getline(std::cin, name);
+		name = Trim(name);
 		if (IsBlank(name))		//确保输入不为空值
 		{
 			std::cout << "Book name cannot be empty! Please enter again!\n";
@@ -190,6 +224,8 @@ void AddBook()
 	{
 		std::cout << "Input book writer: ";
 		std::getline(std::cin, writer);
+
+		writer = Trim(writer);
 		if (IsBlank(writer))
 		{
 			std::cout << "Writer cannot be empty! Please enter again!\n";
@@ -204,6 +240,8 @@ void AddBook()
 
 		std::cout << "Input book id: ";
 		std::getline(std::cin, id);
+
+		id = Trim(id);
 		if (IsBlank(id))
 		{
 			std::cout << "ID cannot be empty! Please enter again!\n";
@@ -266,59 +304,105 @@ void FindBooks()
 	switch (choice)
 	{
 	case 1:
-		std::cout << "Please input Book Name: ";
-		std::getline(std::cin >> std::ws, name);
-		for (const Book& book : books)
+	{
+		while (true)
 		{
-			if (book.GetName().find(name) != std::string::npos)
+			std::cout << "Please input Book Name: ";
+			std::getline(std::cin, name);
+			name = Trim(name);
+
+			if (IsBlank(name))
 			{
-				book.Get_Book();
-				found = true;
+				std::cout << "Book name can not be empty!\n";
+				continue;
 			}
+			found = false;
+			std::string lowername = Tolower(name);
+			for (const Book& book : books)
+			{
+				if (Tolower(book.GetName()).find(lowername) != std::string::npos)
+				{
+					book.Get_Book();
+					found = true;
+				}
+			}
+			if (!found)
+			{
+				std::cout << "Book not found!\n";
+			}
+			std::cout << "Enter to Managerment......";
+			std::cin.get();
+			break;
 		}
-		if (!found)
-		{
-			std::cout << "Book not found!\n";
-		}
-		std::cout << "Enter to Managerment......";
-		std::cin.get();
 		break;
+	}
 	case 2:
-		std::cout << "Please input Writer: ";
-		std::getline(std::cin >> std::ws, writer);
-		for (const Book& book : books)
+	{
+		while (true)
 		{
-			if (book.GetWriter().find(writer) != std::string::npos)
+			std::cout << "Please input Writer: ";
+			std::getline(std::cin, writer);
+
+			writer = Trim(writer);
+			if (IsBlank(writer))
 			{
-				book.Get_Book();
-				found = true;
+				std::cout << "Writer cannot be empty!\n";
+				continue;
 			}
+
+			found = false;
+			std::string lowerwriter = Tolower(writer);
+			for (const Book& book : books)
+			{
+				if (Tolower(book.GetWriter()).find(lowerwriter) != std::string::npos)
+				{
+					book.Get_Book();
+					found = true;
+				}
+			}
+			if (!found)
+			{
+				std::cout << "Book not found!\n";
+			}
+			std::cout << "Enter to Managerment......";
+			std::cin.get();
+			break;
 		}
-		if (!found)
-		{
-			std::cout << "Book not found!\n";
-		}
-		std::cout << "Enter to Managerment......";
-		std::cin.get();
 		break;
+	}
 	case 3:
+	{
 		std::cout << "Please input ID: ";
-		std::getline(std::cin >> std::ws, id);
-		for (const Book& book : books)
+		while (true)
 		{
-			if (id == book.GetID())
+			std::getline(std::cin, id);
+			found = false;
+
+			id = Trim(id);
+			if (IsBlank(id))
 			{
-				book.Get_Book();
-				found = true;
+				std::cout << "ID cannot be empty! Please enter again:";
+				continue;
 			}
+			for (const Book& book : books)
+			{
+				if (id == book.GetID())
+				{
+					book.Get_Book();
+					found = true;
+					break;
+				}
+			}
+			if (!found)
+			{
+				std::cout << "Book not found!\n";
+			}
+			std::cout << "Enter to Managerment......";
+			std::cin.get();
+			break;
 		}
-		if (!found)
-		{
-			std::cout << "Book not found!\n";
-		}
-		std::cout << "Enter to Managerment......";
-		std::cin.get();
 		break;
+	}
 	case 4:
 		return;
 	default:
@@ -342,29 +426,42 @@ void DeleteBooks()
 	{
 	case 1:
 		std::cout << "Please enter ID: ";
-		std::getline(std::cin >> std::ws, id);
-		for (std::vector<Book>::size_type i = 0; i < books.size(); i++) //book.size()返回的是无符号数与int不同
+		while (true)
 		{
-			if (id == books[i].GetID())
-			{
-				books[i].Get_Book();
-				std::cout << "Are you sure you want to delete ? (Y/N) : ";
-				std::getline(std::cin >> std::ws, r);
+			std::getline(std::cin, id);
 
-				if (r == "Y" || r == "y")
-				{
-					books.erase(books.begin() + i);
-					std::cout << "\nDelete successfully!\n";
-					ShowBooks();
-				}
-				else
-				{
-					std::cout << "Delete cancelled\n";
-				}
-				return;
+			id = Trim(id);
+			if (IsBlank(id))
+			{
+				std::cout << "ID cannot be empty! Please enter again:";
+				continue;
 			}
+			for (std::vector<Book>::size_type i = 0; i < books.size(); i++) //book.size()返回的是无符号数与int不同
+			{
+				if (id == books[i].GetID())
+				{
+					books[i].Get_Book();
+					std::cout << "Are you sure you want to delete ? (Y/N) : ";
+					std::getline(std::cin >> std::ws, r);
+					r = Trim(r);
+					r = Tolower(r);
+
+					if (r == "y")
+					{
+						books.erase(books.begin() + i);
+						std::cout << "\nDelete successfully!\n";
+						ShowBooks();
+					}
+					else
+					{
+						std::cout << "Delete cancelled\n";
+					}
+					return;
+				}
+			}
+			std::cout << "Book not found!\n";
+			continue;
 		}
-		std::cout << "Book not found!\n";
 		break;
 
 	case 2:
@@ -397,6 +494,8 @@ void ModifyBooks()
 		{
 			std::cout << "Please input ID: ";
 			std::getline(std::cin, id);
+
+			id = Trim(id);
 			if (IsBlank(id))
 			{
 				std::cout << "ID cannot be empty! Please enter again!\n";
@@ -423,21 +522,23 @@ void ModifyBooks()
 		{
 			std::cout << "What would you like to change? (Name/Writer/Price/Amount): ";
 			std::getline(std::cin >> std::ws, obj);
-			if (obj == "Name" || obj == "name" || obj == "Writer" || obj == "writer" || obj == "Price" || obj == "price" || obj == "Amount" || obj == "amount")
+			obj = Trim(obj);
+			obj = Tolower(obj);
+			if (obj == "name" || obj == "writer" || obj == "price" || obj == "amount")
 			{
 				break;
 			}
 			std::cout << "Invalid input! Please enter again!\n";
 		}
 
-
-
-		if (obj == "Name" || obj == "name")
+		if (obj == "name")
 		{
 			while (true)	//确保输入不为空值
 			{
 				std::cout << "Please input new data: ";
 				std::getline(std::cin, s_value);
+
+				s_value = Trim(s_value);
 				if (IsBlank(s_value))
 				{
 					std::cout << "Name cannot be empty! Please enter again!\n";
@@ -448,12 +549,14 @@ void ModifyBooks()
 			books[i].Set_Name(s_value);
 			books[i].Get_Book();
 		}
-		else if (obj == "Writer" || obj == "writer")
+		else if (obj == "writer")
 		{
 			while (true)		//确保输入不为空值
 			{
 				std::cout << "Please input new data: ";
 				std::getline(std::cin, s_value);
+
+				s_value = Trim(s_value);
 				if (IsBlank(s_value))
 				{
 					std::cout << "Writer cannot be empty! Please enter again!\n";
@@ -464,7 +567,7 @@ void ModifyBooks()
 			books[i].Set_Writer(s_value);
 			books[i].Get_Book();
 		}
-		else if (obj == "Price" || obj == "price")
+		else if (obj == "price")
 		{
 			while (true)
 			{
@@ -480,7 +583,7 @@ void ModifyBooks()
 			books[i].Set_Price(price);
 			books[i].Get_Book();
 		}
-		else if (obj == "Amount" || obj == "amount")
+		else if (obj == "amount")
 		{
 			while (true)
 			{
