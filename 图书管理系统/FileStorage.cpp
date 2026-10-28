@@ -132,7 +132,12 @@ void LoadBooks()
         }
 
 
-        if (price >= 0 && amount >= 0 && !IsBlank(name) && !IsBlank(writer) && !IsBlank(id))
+        if (std::isfinite(price) && 
+            price >= 0 && 
+            amount >= 0 && 
+            !IsBlank(name) &&
+            !IsBlank(writer) 
+            && !IsBlank(id))
         {
             bool duplicates = false;
             for (const Book& book : books)
