@@ -450,7 +450,6 @@ void DeleteBooks()
 					{
 						books.erase(books.begin() + i);
 						std::cout << "\nDelete successfully!\n";
-						ShowBooks();
 					}
 					else
 					{
