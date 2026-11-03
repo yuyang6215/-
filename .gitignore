@@ -4,3 +4,5 @@ Debug/
 Release/
 *.user
 *.suo
+build/
+/图书管理系统/book.txt

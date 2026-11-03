@@ -33,6 +33,14 @@ void SaveBooks()
     std::cout << "Books saved successfully\n";
 }
 
+void RemoveCR(std::string& str)
+{
+	if(!str.empty() && str.back() == '\r')
+	{
+		str.pop_back();
+	}
+}
+
 void LoadBooks()
 {
     std::ifstream file("book.txt");
@@ -62,10 +70,17 @@ void LoadBooks()
 
         std::size_t price_pos;
         std::size_t amount_pos;
+	
+	RemoveCR(name);
+	RemoveCR(writer);
+	RemoveCR(id);
+	RemoveCR(text_price);
+	RemoveCR(text_amount);
 
         try
         {
             price = std::stof(text_price, &price_pos);
+
             if (price_pos != text_price.size())
             {
                 continue;
