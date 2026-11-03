@@ -2,8 +2,8 @@
 #include<string>
 #include<vector>
 #include<fstream>
-#include<limits>
 #include<stdexcept>
+#include<cmath>
 #include"FileStorage.h"
 #include"BookManager.h"
 
@@ -52,85 +52,50 @@ void LoadBooks()
 
     while (std::getline(file, name))
     {
-        if (!(std::getline(file, writer)))
-        {
-            file.clear();
-
-            for (int i = 0; i < 4; i++)
-            {
-                file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
-            continue;
-        }
-
-        if (!(std::getline(file, id)))
-        {
-            file.clear();
-
-            for (int i = 0; i < 3; i++)
-            {
-                file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
-            continue;
-        }
-
-        if ((std::getline(file, text_price)))
-        {
-            std::size_t pos;
-
-            try
-            {
-                price = std::stof(text_price, &pos);
-
-                if (pos != text_price.size())
-                {
-                    file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                    continue;
-                }
-            }
-            catch (const std::invalid_argument&)
-            {
-                file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                continue;
-            }
-            catch (const std::out_of_range&)
-            {
-                file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-                continue;
-            }
-        }
-        else
-        {
-            file.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            break;
-        }
-
-        std::size_t pos;
-        if ((std::getline(file, text_amount)))
-        {
-            try
-            {
-                amount = std::stoi(text_amount, &pos);
-
-                if (pos != text_amount.size())
-                {
-                    continue;
-                }
-            }
-            catch (const std::invalid_argument&)
-            {
-                continue;
-            }
-            catch (const std::out_of_range&)
-            {
-                continue;
-            }
-        }
-        else
+        if (!std::getline(file, writer) ||
+            !std::getline(file, id) || 
+            !std::getline(file, text_price) || 
+            !std::getline(file, text_amount))
         {
             break;
         }
 
+        std::size_t price_pos;
+        std::size_t amount_pos;
+
+        try
+        {
+            price = std::stof(text_price, &price_pos);
+            if (price_pos != text_price.size())
+            {
+                continue;
+            }
+        }
+        catch(const std::invalid_argument&)
+        {
+            continue;
+        }
+        catch (const std::out_of_range&)
+        {
+            continue;
+        }
+
+        try
+        {
+            amount = std::stoi(text_amount, &amount_pos);
+            if (amount_pos != text_amount.size())
+            {
+                continue;
+            }
+        }
+        catch (const std::invalid_argument&)
+        {
+            continue;
+        }
+        catch (const std::out_of_range&)
+        {
+            continue;
+        }
 
         if (std::isfinite(price) && 
             price >= 0 && 
