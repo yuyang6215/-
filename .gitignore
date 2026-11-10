@@ -1,8 +1,22 @@
+
+# Visual Studio
 .vs/
 x64/
 Debug/
 Release/
 *.user
 *.suo
+
+# CMake
 build/
+cmake-build-*/
+
+# Compiled files
+*.o
+*.obj
+*.exe
+*.pdb
+*.ilk
+
+# Project data
 /图书管理系统/book.txt
