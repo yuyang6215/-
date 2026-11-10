@@ -150,6 +150,9 @@
     <ClInclude Include="BookManager.h" />
     <ClInclude Include="FileStorage.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="book.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
